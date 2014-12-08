@@ -1,6 +1,7 @@
 package in.cybergen.blog
 
 import akka.actor.Actor
+import org.cybergen.blog.Utility
 import spray.can.Http
 import spray.http.HttpMethods._
 import spray.http.StatusCodes._
@@ -8,7 +9,7 @@ import spray.http._
 
 import scala.concurrent.duration._
 
-class BenchmarkService extends Actor {
+class SprayBenckMarkService extends Actor {
   import context.dispatcher
   import spray.http.Uri.Path._
   import spray.http.Uri._
@@ -28,7 +29,8 @@ class BenchmarkService extends Actor {
   def receive = {
     // when a new connection comes in we register ourselves as the connection handler
     case _: Http.Connected => sender ! Http.Register(self, fastPath = fastPath)
-
+    case HttpRequest(GET, Uri.Path("/ping"), _, _, _) => sender ! HttpResponse(entity = "\"status\":\"ok\"")
+    case HttpRequest(GET, Uri.Path("/pingPong"), _, _, _) => sender ! HttpResponse(entity = Utility.getResponseString)
     case HttpRequest(GET, Uri.Path("/"), _, _, _) => sender ! HttpResponse(
       entity = HttpEntity(MediaTypes.`text/html`,
         <html>
@@ -46,9 +48,6 @@ class BenchmarkService extends Actor {
         </html>.toString()
       )
     )
-
-    case HttpRequest(GET, Uri.Path("/ping"), _, _, _) => sender ! HttpResponse(entity = "PONG!")
-
     case HttpRequest(GET, Uri.Path("/json"), _, _, _) => sender ! HttpResponse(entity = jsonResponseEntity)
 
     case HttpRequest(GET, Uri.Path("/stop"), _, _, _) =>
