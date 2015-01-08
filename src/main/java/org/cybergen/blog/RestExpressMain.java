@@ -40,7 +40,11 @@ public class RestExpressMain {
         RestExpress server = new RestExpress()
                 .setName(SERVICE_NAME)
                 .setBaseUrl("http://localhost:" + SERVER_PORT)
-                .setExecutorThreadCount(DEFAULT_EXECUTOR_THREAD_POOL_SIZE);
+                .setKeepAlive(true)
+                .setReuseAddress(true)
+                .setReceiveBufferSize(52428800)
+                .setSoLinger(0);
+
         server.uri("/ping", INSTANCE).action("ping", HttpMethod.GET).noSerialization();
         server.bind(SERVER_PORT);
         return server;
