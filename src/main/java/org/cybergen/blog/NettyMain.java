@@ -12,6 +12,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import org.cybergen.blog.nettyHandlers.EchoServerInitializer;
 import org.cybergen.blog.nettyHandlers.HttpHelloWorldServerInitializer;
 
 public final class NettyMain {
@@ -45,7 +46,8 @@ public final class NettyMain {
             b.option(ChannelOption.SO_RCVBUF, 52428800);
             b.option(ChannelOption.SO_LINGER, 0);
 
-            b.childHandler(new HttpHelloWorldServerInitializer(sslCtx));
+            b.childHandler(new EchoServerInitializer(sslCtx));
+            //b.childHandler(new HttpHelloWorldServerInitializer(sslCtx));
             b.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
             b.childOption(ChannelOption.TCP_NODELAY, true);
 
