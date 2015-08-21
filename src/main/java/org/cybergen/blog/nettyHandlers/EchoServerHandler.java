@@ -15,7 +15,7 @@ public class EchoServerHandler extends SimpleChannelInboundHandler<HttpObject> {
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
         if (msg instanceof HttpContent) {
             HttpContent content = (HttpContent) msg;
-            System.out.println("Status reading message is HttpContent "+content.content().toString(CharsetUtil.UTF_8));
+
         }
 
         ctx.close();

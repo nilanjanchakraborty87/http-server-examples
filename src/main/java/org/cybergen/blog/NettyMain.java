@@ -46,8 +46,8 @@ public final class NettyMain {
             b.option(ChannelOption.SO_RCVBUF, 52428800);
             b.option(ChannelOption.SO_LINGER, 0);
 
-            b.childHandler(new EchoServerInitializer(sslCtx));
-            //b.childHandler(new HttpHelloWorldServerInitializer(sslCtx));
+//            b.childHandler(new EchoServerInitializer(sslCtx));
+            b.childHandler(new HttpHelloWorldServerInitializer(sslCtx));
             b.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
             b.childOption(ChannelOption.TCP_NODELAY, true);
 

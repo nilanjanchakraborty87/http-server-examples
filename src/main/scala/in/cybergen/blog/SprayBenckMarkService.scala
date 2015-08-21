@@ -5,7 +5,6 @@ import spray.can.Http
 import spray.http.HttpMethods._
 import spray.http.StatusCodes._
 import spray.http._
-import in.cybergen.blog
 
 class SprayBenckMarkService extends Actor {
   import spray.http.Uri.Path._
