@@ -1,7 +1,7 @@
 package org.cybergen.blog;
 
 import com.google.inject.Singleton;
-import org.jboss.netty.handler.codec.http.HttpMethod;
+//import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.restexpress.Request;
 import org.restexpress.Response;
 import org.restexpress.RestExpress;
@@ -45,7 +45,7 @@ public class RestExpressMain {
                 .setReceiveBufferSize(52428800)
                 .setSoLinger(0);
 
-        server.uri("/ping", INSTANCE).action("ping", HttpMethod.GET).noSerialization();
+//        server.uri("/ping", INSTANCE).action("ping", HttpMethod.GET).noSerialization();
         server.bind(SERVER_PORT);
         return server;
     }
