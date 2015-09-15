@@ -5,8 +5,10 @@ import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
-import org.cybergen.blog.undertowHandlers.ApiRoutesWrapper;
+import org.apache.commons.io.IOUtils;
 import org.cybergen.blog.undertowHandlers.SimpleUndertowBaseHandler;
+
+import java.nio.ByteBuffer;
 
 /**
  * Class org.cybergen.blog.UnderTowExample
@@ -27,19 +29,30 @@ public class UnderTowExample {
 
     public static void main(final String[] args) {
 
-        HttpHandler handler = new ApiRoutesWrapper().wrap(new HttpHandler() {
+        HttpHandler handler = new HttpHandler() {
             @Override
-            public void handleRequest(HttpServerExchange httpServerExchange) throws Exception {
-                httpServerExchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-                httpServerExchange.getResponseSender().send("Base Route");
-            }
-        });
+            public void handleRequest(HttpServerExchange exchange) throws Exception {
+                if(exchange.isInIoThread()) {
+                    exchange.dispatch();
+                }
+                exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
+                try {
+                    exchange.startBlocking();
+                    exchange.getResponseSender().send(ByteBuffer.wrap(IOUtils.toByteArray(exchange.getInputStream())));
+                } catch (Exception e) {
+                    exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+                    exchange.getResponseSender().send("{\"status\":\"failed\",\"comment\":\""+e.getLocalizedMessage()+"\"}");
+                }
 
-        HttpHandler handlers = Handlers.path().addPrefixPath("/",new SimpleUndertowBaseHandler());
+
+            }
+        };
 
         Undertow server = Undertow.builder()
-                .addHttpListener(8080, "localhost")
-                .setHandler(handlers).build();
+                .addHttpListener(8088, "localhost")
+                .setHandler(Handlers.path()
+                        .addPrefixPath("/", handler)
+                        .addPrefixPath("/api", new SimpleUndertowBaseHandler())).build();
         server.start();
     }
 }

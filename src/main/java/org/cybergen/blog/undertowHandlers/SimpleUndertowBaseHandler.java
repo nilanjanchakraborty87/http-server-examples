@@ -12,6 +12,6 @@ public class SimpleUndertowBaseHandler implements HttpHandler {
     @Override
     public void handleRequest(HttpServerExchange httpServerExchange) throws Exception {
         httpServerExchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-        httpServerExchange.getResponseSender().send("Api Route");
+        httpServerExchange.getResponseSender().send("SimpleUnderTowBAseHandler");
     }
 }
