@@ -2,6 +2,7 @@ package org.cybergen.blog;
 
 import com.google.inject.Singleton;
 //import org.jboss.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpMethod;
 import org.restexpress.Request;
 import org.restexpress.Response;
 import org.restexpress.RestExpress;
@@ -17,6 +18,7 @@ import java.io.IOException;
 public class RestExpressMain {
     private static final String SERVICE_NAME = "Test Service";
     private static final String RESPONSECODE = "\"status\":\"ok\"";
+    private static final String HELLOWORLD_RESPONSECODE = "hello world";
 
     private static final int DEFAULT_EXECUTOR_THREAD_POOL_SIZE = 8;
     private static final int SERVER_PORT = 9008;
@@ -45,7 +47,8 @@ public class RestExpressMain {
                 .setReceiveBufferSize(52428800)
                 .setSoLinger(0);
 
-//        server.uri("/ping", INSTANCE).action("ping", HttpMethod.GET).noSerialization();
+        server.uri("/ping", INSTANCE).action("ping", HttpMethod.GET).noSerialization();
+        server.uri("/testN", INSTANCE).action("helloWorldNioHandler", HttpMethod.GET).noSerialization();
         server.bind(SERVER_PORT);
         return server;
     }
@@ -53,4 +56,10 @@ public class RestExpressMain {
     public void ping(Request request, Response response) {
         response.setBody(RESPONSECODE);
     }
+
+    public void helloWorldNioHandler(Request request, Response response) {
+      response.setBody(HELLOWORLD_RESPONSECODE);
+    }
+
+
 }

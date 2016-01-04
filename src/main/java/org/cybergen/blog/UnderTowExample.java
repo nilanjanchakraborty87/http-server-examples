@@ -6,13 +6,16 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
 import org.apache.commons.io.IOUtils;
-import org.cybergen.blog.undertowHandlers.SimpleUndertowBaseHandler;
+import org.cybergen.blog.undertowHandlers.HelloWorldNioHandler;
+import org.cybergen.blog.undertowHandlers.HelloWorldWorkerThreadHandler;
 
 import java.nio.ByteBuffer;
 
 /**
  * Class org.cybergen.blog.UnderTowExample
  * Created by vishnu667 on 21/8/15.
+ *
+ * mvn exec:java -Dexec.mainClass="org.cybergen.blog.UnderTowExample"
  *
  * ab -k -r -n 1000000 -c 1500 http://localhost:8080/
  *
@@ -43,16 +46,15 @@ public class UnderTowExample {
                     exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
                     exchange.getResponseSender().send("{\"status\":\"failed\",\"comment\":\""+e.getLocalizedMessage()+"\"}");
                 }
-
-
             }
         };
 
         Undertow server = Undertow.builder()
-                .addHttpListener(8088, "localhost")
+                .addHttpListener(8088, "0.0.0.0")
                 .setHandler(Handlers.path()
                         .addPrefixPath("/", handler)
-                        .addPrefixPath("/api", new SimpleUndertowBaseHandler())).build();
+                        .addPrefixPath("/testN", new HelloWorldNioHandler())
+                        .addPrefixPath("/testW", new HelloWorldWorkerThreadHandler())).build();
         server.start();
     }
 }
