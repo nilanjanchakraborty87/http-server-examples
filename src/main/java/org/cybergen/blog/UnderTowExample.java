@@ -1,14 +1,19 @@
 package org.cybergen.blog;
 
 import io.undertow.Handlers;
+import static io.undertow.Handlers.*;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
+import io.undertow.server.handlers.resource.FileResourceManager;
+import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.util.Headers;
+
 import org.apache.commons.io.IOUtils;
 import org.cybergen.blog.undertowHandlers.HelloWorldNioHandler;
 import org.cybergen.blog.undertowHandlers.HelloWorldWorkerThreadHandler;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 
 /**
@@ -49,12 +54,15 @@ public class UnderTowExample {
             }
         };
 
+        ResourceHandler resourceHandler = resource(new FileResourceManager(new File("src/main/resources"), 100)).setDirectoryListingEnabled(true);
+
         Undertow server = Undertow.builder()
                 .addHttpListener(8088, "0.0.0.0")
                 .setHandler(Handlers.path()
                         .addPrefixPath("/", handler)
                         .addPrefixPath("/testN", new HelloWorldNioHandler())
-                        .addPrefixPath("/testW", new HelloWorldWorkerThreadHandler())).build();
+                        .addPrefixPath("/testW", new HelloWorldWorkerThreadHandler())
+                        .addPrefixPath("/file", resourceHandler)).build();
         server.start();
     }
 }
