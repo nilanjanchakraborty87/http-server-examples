@@ -37,7 +37,7 @@ public final class NettyMain {
             b.group(bossGroup, workerGroup);
             b.channel(NioServerSocketChannel.class);
 
-                b.handler(new LoggingHandler(LogLevel.INFO));
+                b.handler(new LoggingHandler(LogLevel.ERROR));
 
 
             b.option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
